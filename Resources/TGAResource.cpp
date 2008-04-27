@@ -53,11 +53,15 @@ void TGAResource::Load() {
     delete[] type;
     // seek past the header and useless info
     file->seekg(12);
-    unsigned char* info = new unsigned char[7];
+    unsigned char* info = new unsigned char[6];
     file->read((char*)info, sizeof(unsigned char)*6);
-    width = info[0] + info[1] * 256; 
-    height = info[2] + info[3] * 256;
-    depth =	info[4]; 
+    width =  info[0] + (info[1] << 8);
+    height = info[2] + (info[3] << 8);
+    depth =  info[4];
+
+    bool flipHori = (info[5]>>4) & 1; // bit number 4 (left-to-right)
+    bool flipVert = (info[5]>>5) & 1; // bit number 5 (top-to-bottom)
+
     delete[] info;
 
     // make sure we are loading a supported color depth 
@@ -83,7 +87,7 @@ void TGAResource::Load() {
         delete file;
         throw ResourceException("Error loading TGA data in: " + filename);
     }
-    if (depth != 8) { // @todo: why should this be skipped for depth==8
+    if (depth != 8) { // this is not needed for 8bit as it does not have colors
         // convert the data from BGR to RGB
         for (int i=0; i < size; i+=numberOfCharsPerColor) {
             unsigned char temp = data[i];
@@ -91,12 +95,22 @@ void TGAResource::Load() {
             data[i + 2] = temp;
         }
     }
+
     file->close();
     delete file;
 
     // no image data 
     if (data == NULL)
     	throw ResourceException("Unsupported data in file: " + filename);
+
+    // flip if needed
+    if (flipVert && !flipHori)
+      ReverseVertecally();
+    else if (!flipVert && flipHori)
+      ReverseHorizontally();
+    else if (flipVert && flipHori)
+      Reverse();
+
     loaded = true;
 }
 
@@ -110,18 +124,23 @@ void TGAResource::Unload() {
 int TGAResource::GetID(){
     return id;
 }
+
 void TGAResource::SetID(int id){
     this->id = id;
-}	
+}
+
 int TGAResource::GetWidth(){
     return width;
 }
+
 int TGAResource::GetHeight(){
     return height;
 }
+
 int TGAResource::GetDepth(){
     return depth;
 }
+
 unsigned char* TGAResource::GetData(){
     return data;
 }
