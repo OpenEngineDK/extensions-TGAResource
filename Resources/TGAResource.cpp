@@ -69,7 +69,7 @@ void TGAResource::Load() {
         file->close();
         delete file;
         string msg = "Unsupported color depth: ";
-        msg += Convert::int2string(depth) + " in file: " + filename;
+        msg += Convert::ToString(depth) + " in file: " + filename;
         throw ResourceException(msg);
     }
 
