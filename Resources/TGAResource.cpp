@@ -74,7 +74,7 @@ void TGAResource::Load() {
     }
 
     // load data, taking color depth into acount
-    int numberOfCharsPerColor = (depth/8);
+    unsigned int numberOfCharsPerColor = (depth/8);
     long size = width * height * numberOfCharsPerColor;
     data = new unsigned char[size]; 
     

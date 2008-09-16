@@ -20,7 +20,6 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <Logging/Logger.h>
 
 namespace OpenEngine {
 namespace Resources {
@@ -43,13 +42,6 @@ private:
     int depth;                  //!< texture depth/bits
 
 public:
-
-    /**
-     * Constructor
-     *
-     * @param file tga file to load.
-     */
-
     //    friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version) {
@@ -63,6 +55,11 @@ public:
         width = height = depth = id = 0;
     };
 
+    /**
+     * Constructor
+     *
+     * @param file tga file to load.
+     */
     TGAResource(string file);
     ~TGAResource();
 
