@@ -129,20 +129,31 @@ void TGAResource::SetID(int id){
     this->id = id;
 }
 
-int TGAResource::GetWidth(){
+unsigned int TGAResource::GetWidth(){
     return width;
 }
 
-int TGAResource::GetHeight(){
+unsigned int TGAResource::GetHeight(){
     return height;
 }
 
-int TGAResource::GetDepth(){
+unsigned int TGAResource::GetDepth(){
     return depth;
 }
 
 unsigned char* TGAResource::GetData(){
     return data;
+}
+
+ColorFormat TGAResource::GetColorFormat() {
+    if (depth==32)
+        return RGBA;
+    else if (depth==24)
+        return RGB;
+    else if (depth==8)
+        return LUMINANCE;
+    else
+        throw Exception("unknown color depth");
 }
 
 } //NS Resources

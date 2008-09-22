@@ -37,9 +37,9 @@ private:
     int id;                     //!< material identifier
     string filename;            //!< file name
     unsigned char* data;        //!< binary material data
-    int width;                  //!< texture width
-    int height;                 //!< texture height
-    int depth;                  //!< texture depth/bits
+    unsigned int width;         //!< texture width
+    unsigned int height;        //!< texture height
+    unsigned int depth;         //!< texture depth/bits
 
 public:
     //    friend class boost::serialization::access;
@@ -70,11 +70,11 @@ public:
     // texture resource methods
 	int GetID();
 	void SetID(int id);   
-    int GetWidth();
-	int GetHeight();
-	int GetDepth();
+    unsigned int GetWidth();
+	unsigned int GetHeight();
+	unsigned int GetDepth();
 	unsigned char* GetData();
-
+    ColorFormat GetColorFormat();
 };
 
 /**
