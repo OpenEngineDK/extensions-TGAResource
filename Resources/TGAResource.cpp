@@ -30,7 +30,7 @@ TGAResource::TGAResource(string filename)
     : loaded(false),
       filename(filename),
       data(NULL) {
-    width = height = depth = id = 0;
+    width = height = this->channels = id = 0;
 }
 
 TGAResource::~TGAResource() {
@@ -57,7 +57,7 @@ void TGAResource::Load() {
     file->read((char*)info, sizeof(unsigned char)*6);
     width =  info[0] + (info[1] << 8);
     height = info[2] + (info[3] << 8);
-    depth =  info[4];
+    unsigned char depth =  info[4];
 
     bool flipHori = (info[5]>>4) & 1; // bit number 4 (left-to-right)
     bool flipVert = (info[5]>>5) & 1; // bit number 5 (top-to-bottom)
@@ -74,8 +74,8 @@ void TGAResource::Load() {
     }
 
     // load data, taking color depth into acount
-    unsigned int numberOfCharsPerColor = (depth/8);
-    long size = width * height * numberOfCharsPerColor;
+    this->channels = (depth/8);
+    long size = width * height * this->channels;
     data = new unsigned char[size]; 
     
     file->seekg(dataIndex, ios_base::cur); // skip past image identification
@@ -89,7 +89,7 @@ void TGAResource::Load() {
     }
     if (depth != 8) { // this is not needed for 8bit as it does not have colors
         // convert the data from BGR to RGB
-        for (int i=0; i < size; i+=numberOfCharsPerColor) {
+        for (int i=0; i < size; i += this->channels) {
             unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
@@ -137,23 +137,19 @@ unsigned int TGAResource::GetHeight(){
     return height;
 }
 
-unsigned int TGAResource::GetDepth(){
-    return depth;
-}
-
 unsigned char* TGAResource::GetData(){
     return data;
 }
 
 ColorFormat TGAResource::GetColorFormat() {
-    if (depth==32)
+    if (this->channels == 4)
         return RGBA;
-    else if (depth==24)
+    else if (this->channels == 3)
         return RGB;
-    else if (depth==8)
+    else if (this->channels == 1)
         return LUMINANCE;
     else
-        throw Exception("unknown color depth");
+        throw Exception("unknown color format");
 }
 
 } //NS Resources

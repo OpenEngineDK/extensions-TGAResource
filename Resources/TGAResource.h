@@ -40,7 +40,6 @@ private:
     unsigned char* data;        //!< binary material data
     unsigned int width;         //!< texture width
     unsigned int height;        //!< texture height
-    unsigned int depth;         //!< texture depth/bits
 
 public:
     //    friend class boost::serialization::access;
@@ -53,7 +52,7 @@ public:
     }
 
     TGAResource() : loaded(false),data(NULL) {
-        width = height = depth = id = 0;
+        width = height = id = 0;
     };
 
     /**
@@ -73,7 +72,6 @@ public:
 	void SetID(int id);   
     unsigned int GetWidth();
 	unsigned int GetHeight();
-	unsigned int GetDepth();
 	unsigned char* GetData();
     ColorFormat GetColorFormat();
 };
