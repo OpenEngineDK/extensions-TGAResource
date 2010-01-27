@@ -27,18 +27,16 @@ ITextureResourcePtr TGAPlugin::CreateResource(string file) {
 }
 
 TGAResource::TGAResource(string filename)
-    : loaded(false),
-      filename(filename),
-      data(NULL) {
-    width = height = this->channels = id = 0;
+    : ITextureResource(), 
+      filename(filename) {
 }
 
 TGAResource::~TGAResource() {
-    Unload();
+    this->Unload();
 }
 
 void TGAResource::Load() {
-    if (loaded) return;
+    if (this->data) return;
     ifstream* file = File::Open(filename,ios::binary);
 
     // read in colormap info and image type, unsigned char 0 ignored
@@ -55,8 +53,8 @@ void TGAResource::Load() {
     file->seekg(12);
     unsigned char* info = new unsigned char[6];
     file->read((char*)info, sizeof(unsigned char)*6);
-    width =  info[0] + (info[1] << 8);
-    height = info[2] + (info[3] << 8);
+    this->width =  info[0] + (info[1] << 8);
+    this->height = info[2] + (info[3] << 8);
     unsigned char depth =  info[4];
 
     bool flipHori = (info[5]>>4) & 1; // bit number 4 (left-to-right)
@@ -75,8 +73,8 @@ void TGAResource::Load() {
 
     // load data, taking color depth into acount
     this->channels = (depth/8);
-    long size = width * height * this->channels;
-    data = new unsigned char[size]; 
+    long size = this->width * this->height * this->channels;
+    unsigned char* data = new unsigned char[size]; 
     
     file->seekg(dataIndex, ios_base::cur); // skip past image identification
     file->read((char*)data, sizeof(unsigned char)*size); 
@@ -103,6 +101,8 @@ void TGAResource::Load() {
     if (data == NULL)
     	throw ResourceException("Unsupported data in file: " + filename);
 
+    this->data = data;
+
     // flip if needed
     if (flipVert && !flipHori)
       ReverseVertecally();
@@ -111,45 +111,20 @@ void TGAResource::Load() {
     else if (flipVert && flipHori)
       Reverse();
 
-    loaded = true;
-}
-
-void TGAResource::Unload() {
-    if (loaded) {
-        delete[] data;
-        loaded = false;
-    }
-}
-
-int TGAResource::GetID(){
-    return id;
-}
-
-void TGAResource::SetID(int id){
-    this->id = id;
-}
-
-unsigned int TGAResource::GetWidth(){
-    return width;
-}
-
-unsigned int TGAResource::GetHeight(){
-    return height;
-}
-
-unsigned char* TGAResource::GetData(){
-    return data;
-}
-
-ColorFormat TGAResource::GetColorFormat() {
-    if (this->channels == 4)
-        return RGBA;
-    else if (this->channels == 3)
-        return RGB;
-    else if (this->channels == 1)
-        return LUMINANCE;
-    else
+    // Set format
+    switch(this->channels){
+    case 1:
+        format = LUMINANCE;
+        break;
+    case 3:
+        format = RGB;
+        break;
+    case 4:
+        format = RGBA;
+        break;
+    default:
         throw Exception("unknown color format");
+    }
 }
 
 } //NS Resources
