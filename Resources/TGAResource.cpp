@@ -22,12 +22,20 @@ TGAPlugin::TGAPlugin() {
     this->AddExtension("tga");
 }
 
-ITextureResourcePtr TGAPlugin::CreateResource(string file) {
-    return ITextureResourcePtr(new TGAResource(file));
+ITexture2DPtr TGAPlugin::CreateResource(string file) {
+    return ITexture2DPtr(new TGAResource(file));
+}
+
+UCharTGAPlugin::UCharTGAPlugin() {
+    this->AddExtension("tga");
+}
+
+UCharTexture2DPtr UCharTGAPlugin::CreateResource(string file) {
+    return UCharTexture2DPtr(new TGAResource(file));
 }
 
 TGAResource::TGAResource(string filename)
-    : ITextureResource(), 
+    : Texture2D<unsigned char>(), 
       filename(filename) {
 }
 

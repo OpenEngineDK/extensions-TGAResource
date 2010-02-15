@@ -11,7 +11,7 @@
 #ifndef _TGA_RESOURCE_H_
 #define _TGA_RESOURCE_H_
 
-#include <Resources/ITextureResource.h>
+#include <Resources/Texture2D.h>
 #include <Resources/IResourcePlugin.h>
 #include <string>
 #include <iostream>
@@ -32,7 +32,7 @@ using namespace std;
  *
  * @class TGAResource TGAResource.h Resources/TGAResource.h
  */
-class TGAResource : public ITextureResource {
+class TGAResource : public Texture2D<unsigned char> {
 private:
     string filename;            //!< file name
 
@@ -41,12 +41,12 @@ public:
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version) {
         
-        ar & boost::serialization::base_object<ITextureResource>(*this);
+        ar & boost::serialization::base_object<ITexture2D>(*this);
         ar & filename;
         
     }
 
-    TGAResource() : ITextureResource() {}
+    TGAResource() : Texture2D<unsigned char>() {}
 
     /**
      * Constructor
@@ -65,10 +65,21 @@ public:
  *
  * @class TGAPlugin TGAResource.h Resources/TGAResource.h
  */
-class TGAPlugin : public IResourcePlugin<ITextureResource> {
+class TGAPlugin : public IResourcePlugin<ITexture2D> {
 public:
 	TGAPlugin();
-    ITextureResourcePtr CreateResource(string file);
+    ITexture2DPtr CreateResource(string file);
+};
+
+/**
+ * TGA texture resource plug-in.
+ *
+ * @class UCharTGAPlugin TGAResource.h Resources/TGAResource.h
+ */
+class UCharTGAPlugin : public IResourcePlugin<UCharTexture2D> {
+public:
+	UCharTGAPlugin();
+    UCharTexture2DPtr CreateResource(string file);
 };
 
 } //NS Resources
