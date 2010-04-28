@@ -17,11 +17,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/export.hpp>
-#include <boost/serialization/split_member.hpp>
-#include <boost/serialization/extended_type_info.hpp>
-
 namespace OpenEngine {
 namespace Resources {
 
@@ -37,15 +32,6 @@ private:
     string filename;            //!< file name
 
 public:
-    //    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive& ar, const unsigned int version) {
-        
-        ar & boost::serialization::base_object<ITexture2D>(*this);
-        ar & filename;
-        
-    }
-
     TGAResource() : Texture2D<unsigned char>() {}
 
     /**
@@ -84,7 +70,5 @@ public:
 
 } //NS Resources
 } //NS OpenEngine
-
-BOOST_CLASS_EXPORT(OpenEngine::Resources::TGAResource)
 
 #endif // _TGA_RESOURCE_H_
