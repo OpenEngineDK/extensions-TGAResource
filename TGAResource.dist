@@ -1,0 +1,3 @@
+# source
+darcs /extensions/TGAResource    http://openengine.dk/code/extensions/TGAResource
+darcs-dev /extensions/TGAResource    fh.daimi.au.dk:/users/cgd/code/extensions/TGAResource
