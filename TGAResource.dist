@@ -1,3 +1,3 @@
 # source
-darcs /extensions/TGAResource    http://openengine.dk/code/extensions/TGAResource
-darcs-dev /extensions/TGAResource    fh.daimi.au.dk:/users/cgd/code/extensions/TGAResource
+git /extensions/TGAResource    https://github.com/OpenEngineDK/extensions-TGAResource.git
+git-dev /extensions/TGAResource    git@github.com:OpenEngineDK/extensions-TGAResource.git
